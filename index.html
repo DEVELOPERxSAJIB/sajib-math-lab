@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sajib Fortran Program Repository</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0066cc;
+            --primary-hover: #0052a3;
+            --bg-dark: #f8f9fa;
+            --bg-card: #ffffff;
+            --bg-hover: #f1f3f5;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --border: #e0e0e0;
+            --success: #28a745;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+            padding: 2rem 1rem;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            min-height: calc(100vh - 200px);
+        }
+
+        .programs-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            max-width: 900px;
+            justify-items: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Program Card */
+        .program-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .program-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.12);
+            transform: translateY(-4px);
+        }
+
+        .program-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(0, 102, 204, 0.05) 0%, rgba(0, 102, 204, 0.02) 100%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .program-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .program-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .program-content {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .program-code {
+            display: none;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid var(--border);
+            flex: 1;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+
+        .program-code.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+
+            to {
+                opacity: 1;
+                max-height: 400px;
+            }
+        }
+
+        .code-block {
+            background: #f5f5f5;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Courier New', 'Courier', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .code-block code {
+            display: block;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .keyword {
+            color: #ec4899;
+        }
+
+        .function {
+            color: #60a5fa;
+        }
+
+        .string {
+            color: #10b981;
+        }
+
+        .comment {
+            color: #64748b;
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background: var(--bg-dark);
+            border-top: 1px solid var(--border);
+        }
+
+        button {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-toggle {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-toggle:hover {
+            background: var(--primary-hover);
+            transform: scale(1.05);
+        }
+
+        .btn-copy {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-copy:hover {
+            background: #059669;
+            transform: scale(1.05);
+        }
+
+        .btn-copy.copied {
+            background: var(--success);
+        }
+
+        /* Feedback Message */
+        .copy-feedback {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--success);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+            display: none;
+            animation: slideInUp 0.3s ease;
+            z-index: 1000;
+        }
+
+        .copy-feedback.show {
+            display: block;
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            background: #f8f9fa;
+            border-top: 1px solid var(--border);
+            padding: 2rem 1rem;
+            text-align: center;
+            color: var(--text-secondary);
+            margin-top: 2rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .pdf-button {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+            color: white;
+            border: none;
+            padding: 0.875rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .pdf-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 102, 204, 0.3);
+        }
+
+        .pdf-button:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .programs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
+
+            .search-input {
+                min-width: 100%;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .copy-feedback {
+                bottom: 1rem;
+                right: 1rem;
+                left: 1rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .pdf-button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        /* Scrollbar Styling */
+        .code-block::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .code-block::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        .code-block::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .code-block::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-hover);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <h1>SAJIB Fortran Repository</h1>
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput"
+                    placeholder="Search programs by name or description...">
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="programs-grid" id="programsGrid"></div>
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-state-icon">⊘</div>
+            <p>No programs found. Try a different search.</p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <button class="pdf-button" id="pdfButton">Download PDF</button>
+            <p>&copy; 2026 Fortran Program Repository | Professional Code Management Tool</p>
+        </div>
+    </footer>
+
+    <div class="copy-feedback" id="copyFeedback">Code copied to clipboard!</div>
+
+    <script>
+        const programs = [
+            {
+                id: 1,
+                title: "01 Decimal_To_Binary",
+                description: "একটি ধনাত্মক দশমিক সংখ্যাকে Binary সংখ্যায় রূপান্তরের জন্য একটি Fortran Program লেখ।",
+                code: `PROGRAM Decimal_To_Binary
+IMPLICIT NONE
+INTEGER :: n, r
+PRINT *, "Enter a postitive desimal number:"
+READ *, n
+PRINT *, "Binary equivalint is:"
+DO WHILE (n > 0)
+r = MOD(n, 2)
+PRINT *, r
+n = n/2
+END DO
+END PROGRAM`
+            },
+            {
+                id: 2,
+                title: "02 PROGRAM PointsInCircle",
+                description: "x ^ 2 + y ^ 2 = r ^ 2 বৃত্তের ভিতরে অবস্থিত পূর্ণসংখ্যা স্থানাঙ্কযুক্ত বিন্দুর সংখ্যা নির্ণয়ের জন্য একটি Fortran Program লেখ যা ব্যবহারকারীর কাছ থেকে এর মান গ্রহণ করবে।",
+                code: `PROGRAM PointsInCircle 
+  INTEGER :: r, x, y, count
+
+  PRINT *, "Enter the value of r:"
+  READ *, r
+
+  count = 0
+
+  DO x = -r, r
+    DO y = -r, r
+      IF (x**2 + y**2 <= r**2) THEN
+        count = count + 1
+      END IF
+    END DO
+  END DO
+
+  PRINT *, "Required points inside:", count
+END PROGRAM`
+            },
+            {
+                id: 3,
+                title: "03 PROGRAM Prime",
+                description: "একটি Fortran Program লেখ যা একটি ধনাত্মক পূর্ণসংখ্যা ইনপুট হিসেবে গ্রহণ করবে এবং নির্ণয় করবে সংখ্যাটি মৌলিক (Prime) কি না। যদি সংখ্যাটি মৌলিক না হয়, তবে তার উৎপাদকসমূহ নির্ণয় করবে।",
+                code: `PROGRAM Prime
+ INTEGER :: n, i, c
+ PRINT *, "Enter a positive integer:"
+ READ *, n
+ c = 0
+ DO i = 2, n/2
+ IF (MOD(n, i) == 0) THEN
+ c = c + 1
+ END IF
+ END DO
+ IF (c == 0 .AND. n > 1) THEN
+ PRINT *, n, "is a Prime Number."
+ ELSE
+ PRINT *, n, "is not Prime. Factors are:"
+ DO i = 1, n
+ IF (MOD(n, i) == 0) PRINT *, i
+ END DO
+ END IF
+END PROGRAM`
+            },
+            {
+                id: 4,
+                title: "04 PROGRAM Factorial",
+                description: "একটি সংখ্যার Factorial হিসাবের জন্য ফাংশন সাবরুটিন ব্যবহার করে nc, নির্ণয়ের একটি Fortran Program লেখ।",
+                code: `PROGRAM Factorial
+INTEGER :: n,r
+INTEGER :: fact
+PRINT *, "Enter the value of n :"
+READ *, n
+PRINT *, "Enter the value of r :"
+READ *, r
+PRINT *, "nCr =", fact(n)/(fact(r)*fact(n-r))
+END PROGRAM
+INTEGER FUNCTION fact(x)
+INTEGER :: x,i
+fact = 1
+DO i=1,x
+ fact = fact*i
+END DO
+END FUNCTION`
+            },
+            {
+                id: 5,
+                title: "05 PROGRAM MatrixSum",
+                description: "একটি n x n ম্যাট্রিক্সের (ক) প্রধান কর্ণের উপরের গুণফল এবং (খ) প্রধান কর্ণের নিচের ত্রিকোণসমূহের যোগ নির্ণয় করার জন্য একটি Fortran Program লেখ।",
+                code: `PROGRAM MatrixSum
+INTEGER :: A(10,10),n,i,j
+INTEGER :: upper,lower
+upper=0
+lower=0
+PRINT *, "Enter order of matrix:"
+READ *, n
+ PRINT *, "Enter matrix elements:"
+DO i=1,n
+ DO j=1,n
+ READ *, A(i,j)
+ END DO
+END DO
+DO i=1,n
+ DO j=1,n
+ IF (j>i) upper = upper + A(i,j)
+ IF (i>j) lower = lower + A(i,j)
+ END DO
+END DO
+PRINT *, "Upper Sum =",upper
+PRINT *, "Lower Sum =",lower
+END PROGRAM
+`
+            },
+            {
+                id: 6,
+                title: "06 PROGRAM Newton",
+                description: "Newton-Raphson পদ্ধতি ব্যবহার করে x ^ 3 - x - 1 = 0 সমীকরণের মূল নির্ণয়ের জন্য একটি Fortran Program লেখ।",
+                code: `PROGRAM Newton
+REAL :: x,x1
+REAL :: f,df
+PRINT *, "Enter initial guess:"
+READ *, x
+DO
+ f = x**3 - x - 1
+ df = 3*x**2 - 1
+ x1 = x - f/df
+ IF (ABS(x1-x) < 0.001) EXIT
+ x = x1
+END DO
+PRINT *, "Root =", x1
+END PROGRAM
+`
+            },
+            {
+                id: 7,
+                title: "07 PROGRAM Lagrange",
+                description: "2-বিন্দু, 3-বিন্দু এবং 4-বিন্দু ব্যাকওয়ার্ড ইন্টারপোলেশন সূত্র ব্যবহার করে নিম্নোক্ত টেবিল হতে f(0.6) নির্ণয় করার জন্য একটি Fortran Program লেখ। X 1.0 4.0 9.0 F(x) 101.0 102.0 103.0 16.0 104.0",
+                code: `PROGRAM Lagrange
+REAL :: x(4),y(4),xp,p
+INTEGER :: i,j
+DATA x/1.0,4.0,9.0,16.0/
+DATA y/101.0,102.0,103.0,104.0/
+PRINT *, "Enter value of x:"
+READ *, xp
+p=0
+DO i=1,4
+ term = y(i)
+ DO j=1,4
+ IF (j /= i) THEN
+ term = term*(xp-x(j))/(x(i)-x(j))
+ END IF
+ END DO
+ p = p + term
+END DO
+PRINT *, "f(x) =", p
+END PROGRAM
+`
+            },
+            {
+                id: 8,
+                title: "08 PROGRAM SimpsonRule",
+                description: "Simpson 1/3 rule ব্যবহার করে এর মান নির্ণয়ের ফোরট্রান প্রোগ্রাম লেখ। integrate sqrt(1 - x ^ 2) dx from 0 to 1",
+                code: `PROGRAM SimpsonRule
+ REAL :: a, b, h, x, sum, result
+ INTEGER :: n, i
+
+ a = 0.0
+ b = 1.0
+
+ h = (b - a) / n
+ sum = f(a) + f(b)
+
+ DO i = 1, n-1
+   x = a + i * h
+   IF (MOD(i, 2) == 0) THEN
+     sum = sum + 2.0 * f(x)
+   ELSE
+     sum = sum + 4.0 * f(x)
+   END IF
+ END DO
+
+ result = (h / 3.0) * sum
+ PRINT *, "Integral result:", result
+
+CONTAINS
+
+ REAL FUNCTION f(x)
+   REAL :: x
+   f = SQRT(1.0 - x**2)
+ END FUNCTION f
+
+END PROGRAM SimpsonRule`
+            },
+            {
+                id: 9,
+                title: "09 PROGRAM PowerMethod",
+                description: "Power Method ব্যবহার করে A = [[1, 6, 1], [1, 2, 0], [0, 0, 3]]ম্যাট্রিক্সের বৃহত্তম আইগেন মান (Largest Eigenvalue) নির্ণয় কর।",
+                code: `PROGRAM PowerMethod
+ IMPLICIT NONE
+ INTEGER, PARAMETER :: N = 3
+ REAL :: A(N, N), X(N), X_NEW(N)
+ REAL :: Eigen_Old, Eigen_New, Tolerance
+ INTEGER :: i, j, Iteration, Max_Iter
+ DATA A /1.0, 1.0, 0.0, 6.0, 2.0, 0.0, 1.0, 0.0, 3.0/
+ DATA X /1.0, 0.0, 0.0/
+ Tolerance = 0.00001
+ Max_Iter = 100
+ Eigen_Old = 0.0
+ PRINT *, "Iter", " Eigenvalue"
+ DO Iteration = 1, Max_Iter
+ DO i = 1, N
+ X_NEW(i) = 0.0
+ DO j = 1, N
+ X_NEW(i) = X_NEW(i) + A(i, j) * X(j)
+ END DO
+ END DO
+ Eigen_New = X_NEW(1)
+ DO i = 2, N
+ IF (ABS(X_NEW(i)) > ABS(Eigen_New)) THEN
+ Eigen_New = X_NEW(i)
+ END IF
+ END DO
+ DO i = 1, N
+ X(i) = X_NEW(i) / Eigen_New
+ END DO
+ PRINT '(I3, F15.5)', Iteration, Eigen_New
+ IF (ABS(Eigen_New - Eigen_Old) < Tolerance) EXIT
+ Eigen_Old = Eigen_New
+ END DO
+ PRINT *, "The largest Eigenvalue is:", Eigen_New
+END PROGRAM
+`
+            },
+            {
+                id: 10,
+                title: "10 PROGRAM GAUSS",
+                description: "Gaussian Elimination ব্যবহার করে- x + y - z = 2, 2x + 3y + 5z = - 33, x + 2y + 3z = 6 সমীকরণ জোটের সমাধান নির্ণয়ের প্রোগ্রাম লেখ।",
+                code: `PROGRAM GAUSS
+IMPLICIT NONE
+REAL :: a(3,4), factor, x(3)
+INTEGER :: i, j, k
+PRINT *, 'Enter the augmented matrix (3x4):'
+DO i = 1,3
+ DO j = 1,4
+ READ *, a(i,j)
+ END DO
+END DO
+DO k = 1,2
+ DO i = k+1,3
+ factor = a(i,k)/a(k,k)
+ DO j = k,4
+ a(i,j) = a(i,j) - factor*a(k,j)
+ END DO
+ END DO
+END DO
+x(3) = a(3,4)/a(3,3)
+x(2) = (a(2,4) - a(2,3)*x(3))/a(2,2)
+x(1) = (a(1,4) - a(1,2)*x(2) - a(1,3)*x(3))/a(1,1)
+PRINT *, 'Solution:'
+PRINT *, 'x = ', x(1)
+PRINT *, 'y = ', x(2)
+PRINT *, 'z = ', x(3)
+END PROGRAM
+`
+            }
+        ];
+
+        const grid = document.getElementById('programsGrid');
+        const searchInput = document.getElementById('searchInput');
+        const emptyState = document.getElementById('emptyState');
+
+        // Render programs
+        function renderPrograms(filtered = programs) {
+            grid.innerHTML = '';
+
+            if (filtered.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            filtered.forEach((program) => {
+                const card = document.createElement('div');
+                card.className = 'program-card';
+                card.innerHTML = `
+                    <div class="program-header">
+                        <h2 class="program-title">${program.title}</h2>
+                        <p class="program-description">${program.description}</p>
+                    </div>
+                    <div class="program-content">
+                        <div class="program-code" id="code-${program.id}">
+                            <div class="code-block">
+                                <code>${escapeHtml(program.code)}</code>
+                            </div>
+                        </div>
+                        <div class="button-group">
+                            <button class="btn-toggle" onclick="toggleCode(${program.id})">
+                                <span></span>
+                                <span>View Code</span>
+                            </button>
+                            <button class="btn-copy" onclick="copyCode(${program.id})">
+                                <span></span>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Toggle code visibility
+        function toggleCode(id) {
+            const codeBlock = document.getElementById(`code-${id}`);
+            const btn = event.target.closest('.btn-toggle');
+
+            codeBlock.classList.toggle('active');
+            btn.textContent = codeBlock.classList.contains('active')
+                ? 'Hide Code'
+                : 'View Code';
+        }
+
+        // Copy to clipboard
+        function copyCode(id) {
+            const program = programs.find(p => p.id === id);
+            const code = program.code;
+
+            navigator.clipboard.writeText(code).then(() => {
+                // Show feedback
+                const feedback = document.getElementById('copyFeedback');
+                feedback.classList.add('show');
+
+                setTimeout(() => {
+                    feedback.classList.remove('show');
+                }, 2000);
+            }).catch(() => {
+                alert('Failed to copy code');
+            });
+        }
+
+        // Search functionality
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = programs.filter((program) => {
+                return (
+                    program.title.toLowerCase().includes(query) ||
+                    program.description.toLowerCase().includes(query)
+                );
+            });
+            renderPrograms(filtered);
+        });
+
+        // HTML escape for code display
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, (m) => map[m]);
+        }
+
+        // Initial render
+        renderPrograms();
+
+        // PDF Button functionality
+        const pdfButton = document.getElementById('pdfButton');
+        pdfButton.addEventListener('click', () => {
+            // Replace 'programs.pdf' with your actual PDF file name or URL
+            const pdfUrl = 'MathLab.pdf';
+            
+            // Try to download, fallback to opening if it's a URL
+            const link = document.createElement('a');
+            link.href = pdfUrl;
+            link.download = 'MathLab.pdf';
+            link.style.display = 'none';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    </script>
+</body>
+
+</html>
